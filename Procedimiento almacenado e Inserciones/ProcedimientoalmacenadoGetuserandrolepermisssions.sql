@@ -25,8 +25,8 @@ BEGIN
         p.can_delete, 
         p.can_import, 
         p.can_export,
-		0 AS Registro,
-		pu.peusr_include
+	0 AS Registro,
+	pu.peusr_include
     FROM PermiUser pu
     JOIN Permission p ON pu.permission_id = p.id_permi
     WHERE pu.usercompany_id = @user_id
@@ -47,7 +47,7 @@ BEGIN
         p.can_import, 
         p.can_export,
         pur.peusr_record AS Registro,
-		pur.peusr_include
+	pur.peusr_include
 
     FROM PermiUserRecord pur
     JOIN Permission p ON pur.permission_id = p.id_permi
@@ -68,7 +68,7 @@ BEGIN
         p.can_import, 
         p.can_export,
         0 AS Registro,
-		pr.perol_include
+	pr.perol_include
     FROM UserCompany uc
     JOIN Role r ON uc.role_id = r.id_role
     JOIN PermiRole pr ON r.id_role = pr.role_id
@@ -90,8 +90,8 @@ BEGIN
         p.can_delete, 
         p.can_import, 
         p.can_export,
-        prr.perrc_record AS Campo,
-		prr.perrc_include
+        prr.perrc_record AS Registro,
+	prr.perrc_include
     FROM UserCompany uc
     JOIN Role r ON uc.role_id = r.id_role
     JOIN PermiRoleRecord prr ON r.id_role = prr.role_id
