@@ -8,6 +8,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+GO
 CREATE PROCEDURE [dbo].[GetUserAndRolePermissions]
     @user_id BIGINT,
     @entitycatalog_id INT
@@ -24,7 +25,8 @@ BEGIN
         p.can_delete, 
         p.can_import, 
         p.can_export,
-        0 AS Campo
+		0 AS Registro,
+		pu.peusr_include
     FROM PermiUser pu
     JOIN Permission p ON pu.permission_id = p.id_permi
     WHERE pu.usercompany_id = @user_id
@@ -33,7 +35,7 @@ BEGIN
 
     UNION
 
-    -- Consulta específica granular sobre los módulos y las exclusiones de los permisos
+    -- Consulta especÃ­fica granular sobre los mÃ³dulos y las exclusiones de los permisos
     SELECT 
         'Usuario_record' AS TipoPermiso,
         p.name, 
@@ -44,7 +46,9 @@ BEGIN
         p.can_delete, 
         p.can_import, 
         p.can_export,
-        pur.peusr_record AS Campo 
+        pur.peusr_record AS Registro,
+		pur.peusr_include
+
     FROM PermiUserRecord pur
     JOIN Permission p ON pur.permission_id = p.id_permi
     WHERE pur.usercompany_id = @user_id
@@ -52,7 +56,7 @@ BEGIN
 
     UNION
 
-    -- Obtener permisos asignados al usuario a través de su rol
+    -- Obtener permisos asignados al usuario a travÃ©s de su rol
     SELECT 
         'Rol' AS TipoPermiso,
         p.name, 
@@ -63,7 +67,8 @@ BEGIN
         p.can_delete, 
         p.can_import, 
         p.can_export,
-        0 AS Campo
+        0 AS Registro,
+		pr.perol_include
     FROM UserCompany uc
     JOIN Role r ON uc.role_id = r.id_role
     JOIN PermiRole pr ON r.id_role = pr.role_id
@@ -74,7 +79,7 @@ BEGIN
 
     UNION
 
-    -- Permisos específicos del rol del usuario
+    -- Permisos especÃ­ficos del rol del usuario
     SELECT 
         'Rol_record' AS TipoPermiso,
         p.name, 
@@ -85,7 +90,8 @@ BEGIN
         p.can_delete, 
         p.can_import, 
         p.can_export,
-        prr.perrc_record AS Campo
+        prr.perrc_record AS Campo,
+		prr.perrc_include
     FROM UserCompany uc
     JOIN Role r ON uc.role_id = r.id_role
     JOIN PermiRoleRecord prr ON r.id_role = prr.role_id
@@ -93,6 +99,7 @@ BEGIN
     WHERE uc.user_id = @user_id
       AND prr.entitycatalog_id = @entitycatalog_id
 END;
+
 GO
 
 
